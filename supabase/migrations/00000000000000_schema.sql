@@ -10,20 +10,6 @@ CREATE EXTENSION IF NOT EXISTS vector;
 -- Note: pg_cron and pg_net must be enabled via Supabase Dashboard
 
 -- =============================================================================
--- DROP OLD TABLES (clean slate for fresh installs)
--- =============================================================================
-DO $$
-BEGIN
-    DROP TRIGGER IF EXISTS update_chat_session_on_message ON chat_messages;
-EXCEPTION
-    WHEN undefined_table THEN NULL;
-END $$;
-
-DROP FUNCTION IF EXISTS update_chat_session_timestamp();
-DROP TABLE IF EXISTS chat_messages CASCADE;
-DROP TABLE IF EXISTS chat_sessions CASCADE;
-
--- =============================================================================
 -- SCOUTS TABLE
 -- =============================================================================
 CREATE TABLE IF NOT EXISTS scouts (

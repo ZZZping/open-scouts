@@ -136,21 +136,9 @@ async function runMigrations() {
           console.log(`   SELECT vault.create_secret('your-service-role-key', 'service_role_key');\n`);
         }
 
-        // Clean up old cron jobs and verify new ones
         console.log('⏰ Configuring cron jobs...');
 
-        // Remove old-style cron jobs
-        const oldJobs = ['scout-cron-hourly', 'scout-cron-5min'];
-        for (const jobName of oldJobs) {
-          try {
-            await client.query(`SELECT cron.unschedule($1);`, [jobName]);
-            console.log(`   Removed old job: ${jobName}`);
-          } catch {
-            // Job doesn't exist, that's fine
-          }
-        }
-
-        // Verify the new dispatcher jobs exist, create them if missing
+        // Verify the dispatcher jobs exist, create them if missing
         let { rows: cronJobs } = await client.query(`
           SELECT jobname, schedule FROM cron.job WHERE jobname IN ('dispatch-scouts', 'cleanup-scouts');
         `);
